@@ -8,7 +8,7 @@
     background-color: antiquewhite;
     justify-content: space-between;
     position: fixed;
-    padding: 0 20%;
+    padding: 0 5%;
     align-items: center;
     box-sizing: border-box;
     color:  rgb(82, 58, 6);
@@ -16,4 +16,15 @@
 
 .Toolbar nav {
     height: 100%;
+}
+
+.toolbarLogo {
+    height: 80%;
+}
+
+@media(max-width: 499px){
+    .DiskTopOnly {
+        display: none;
+    }
+
 }

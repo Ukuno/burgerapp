@@ -3,8 +3,7 @@ import './NavigationItem.css';
 
 const navigationItem = (props) => (
     <li className='NavigationItem'>
-        <a href='/' 
-        link={props.active}
+        <a href={props.link} 
         className={props.active ? 'active' : null}>{props.children}</a>
     </li>
 );
