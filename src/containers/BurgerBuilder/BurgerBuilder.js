@@ -6,6 +6,7 @@ import BuildControls from '../../components/Burger/BuildControls/BuildControls'
 import Modal from '../../components/Ui/Modal/Modal'
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary'
 import axios from '../../axios-orders'
+import Spinner from '../../components/Ui/Spinner/Spinner'
 
 const INGREDIENT_PRICES =    {
     cheese : 0.5,
@@ -25,7 +26,8 @@ class BurgerBuilder extends Component {
         },
         totalPrice : 4,
         purchasable: false,
-        purchasing: false    
+        purchasing: false,
+        loader: false    
     }
 
     updatePurchase(ingredients) {
@@ -77,6 +79,7 @@ class BurgerBuilder extends Component {
     }
 
     continuePurchsing = () => {
+        this.setState({loader: true})
         const order = {
             ingredients : this.state.ingredients,
             price: this.state.totalPrice.toFixed(2),
@@ -94,9 +97,12 @@ class BurgerBuilder extends Component {
         axios.post('/order.json', order)
         .then(res => {
             console.log(res)
-            this.closeModal();
+            this.setState({loader: false, purchasing: false})
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            this.setState({loader: false, purchasing: false})
+            console.log(err)
+        });
     }
 
 
@@ -108,15 +114,21 @@ class BurgerBuilder extends Component {
         for(let key in disableIngredientsInfo){
             disableIngredientsInfo[key] = disableIngredientsInfo[key] <= 0;
         }
+
+        let orderSummary = <OrderSummary  
+                            ingredients = {this.state.ingredients}
+                            cancel={this.closeModal}
+                            continue={this.continuePurchsing}
+                            price={this.state.totalPrice}
+                            />
+
+        if(this.state.loader) {
+            orderSummary = <Spinner />
+        }
         return (
             <Aux>
                 <Modal show={this.state.purchasing} closed={this.closeModal}>
-                    <OrderSummary  
-                    ingredients = {this.state.ingredients}
-                    cancel={this.closeModal}
-                    continue={this.continuePurchsing}
-                    price={this.state.totalPrice}
-                    />
+                    { orderSummary }
                 </Modal>
                 <Burger ingredients={this.state.ingredients}/>
                 <BuildControls 
